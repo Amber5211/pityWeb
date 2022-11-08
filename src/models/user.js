@@ -14,10 +14,18 @@ const UserModel = {
     },
 
     *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
+      // const response = yield call(queryCurrent);
+      const token = localStorage.getItem('pityToken');
+      const userInfo = localStorage.getItem('pityUser');
+      if (!token || !userInfo) {
+        history.push('/user/login');
+        return;
+      }
+      const info = JSON.parse(userInfo);
+
       yield put({
         type: 'saveCurrentUser',
-        payload: response,
+        payload: info,
       });
     },
   },
