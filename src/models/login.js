@@ -1,6 +1,6 @@
 import { stringify } from 'querystring';
 import { history } from 'umi';
-import { fakeAccountLogin, login } from '@/services/login';
+import { fakeAccountLogin, login, register } from '@/services/login';
 import { CONFIG } from '@/consts/config';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
@@ -46,6 +46,17 @@ const Model = {
       }
     },
 
+    *register({ payload }, { call, put }) {
+      // const response = yield call(fakeAccountLogin, payload);
+      const response = yield call(register, payload);
+
+      if (response.code !== 0) {
+        message.error(response.msg);
+        return;
+      }
+      payload.setType('account');
+      message.success(response.msg);
+    },
     logout() {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
 

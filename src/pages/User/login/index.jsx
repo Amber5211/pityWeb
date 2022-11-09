@@ -56,8 +56,18 @@ const Login = (props) => {
           },
         }}
         onFinish={(values) => {
-          handleSubmit(values);
-          return Promise.resolve();
+          const { dispatch } = props;
+          if (type === 'account') {
+            dispatch({
+              type: 'login/login',
+              payload: { username: values.username, password: values.password },
+            });
+          } else {
+            dispatch({
+              type: 'login/register',
+              payload: { ...values, setType },
+            });
+          }
         }}
       >
         <Tabs activeKey={type} onChange={setType}>
@@ -82,7 +92,7 @@ const Login = (props) => {
         {type === 'account' && (
           <>
             <ProFormText
-              name="userName"
+              name="username"
               fieldProps={{
                 size: 'large',
                 prefix: <UserOutlined className={styles.prefixIcon} />,
