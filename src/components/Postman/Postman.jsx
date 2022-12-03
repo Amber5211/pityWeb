@@ -12,13 +12,37 @@ import {
   Dropdown,
   notification,
   Modal,
+  Table,
 } from 'antd';
 import { DeleteTwoTone, DownOutlined, SendOutlined } from '@ant-design/icons';
 import EditableTable from '@/components/Table/EditableTable';
 import CodeEditor from '@/components/Postman/CodeEditor';
 import { httpRequest } from '@/services/request';
+import auth from '@/utils/auth';
 
 const { Option } = Select;
+
+const STATUS = {
+  200: { color: '#67C23A', text: 'OK' },
+  401: { color: '#F56C6C', text: 'unauthorized' },
+};
+
+// 状态码和响应时间组件
+const tabExtra = (response) => {
+  return response && response.response ? (
+    <div>
+      <span>
+        Status:
+        <span style={{ color: STATUS[response.status_code].color, marginLeft: 8, marginRight: 8 }}>
+          {response.status_code} {STATUS[response.status_code].text}
+        </span>
+        <span style={{ marginLeft: 8, marginRight: 8 }}>
+          Time:<span style={{ color: '#67C23A' }}>{response.elapsed}</span>
+        </span>
+      </span>
+    </div>
+  ) : null;
+};
 
 export default () => {
   const [bodyType, setBodyType] = useState('none');
@@ -132,23 +156,20 @@ export default () => {
     }
     const res = await httpRequest(params);
     setLoading(false);
-    if (res.code !== 0) {
-      console.log(res.msg);
-      notification.error(res.msg);
-      return;
+    if (auth.response(res, true)) {
+      setResponse(res.data);
     }
-    setResponse(res.data);
     //展示接口返回结果
-    Modal.info({
-      title: '返回结果',
-      content: (
-        <pre>
-          {typeof res.data.response === 'string'
-            ? res.data.response
-            : JSON.stringify(res.data.response, null, 2)}
-        </pre>
-      ),
-    });
+    // Modal.info({
+    //   title: '返回结果',
+    //   content: (
+    //     <pre>
+    //       {typeof res.data.response === 'string'
+    //         ? res.data.response
+    //         : JSON.stringify(res.data.response, null, 2)}
+    //     </pre>
+    //   ),
+    // });
   };
 
   //params参数列表
@@ -179,6 +200,31 @@ export default () => {
         ),
       },
     ];
+  };
+
+  //返回的cookies和Headers列表组件
+  const resColumns = [
+    {
+      title: 'KEY',
+      dataIndex: 'key',
+      key: 'key',
+    },
+    {
+      title: 'VALUE',
+      dataIndex: 'value',
+      key: 'value',
+    },
+  ];
+
+  //根据类型获取response中对应的数据
+  const toTable = (field) => {
+    if (!response[field]) {
+      return [];
+    }
+    return Object.keys(response[field]).map((key) => ({
+      key,
+      value: response[field][key],
+    }));
   };
 
   // raw下拉菜单点击事件
@@ -268,7 +314,7 @@ export default () => {
           </Button>
         </Col>
       </Row>
-      {/*tab菜单*/}
+      {/*请求方式tab菜单*/}
       <Row style={{ marginTop: 8 }}>
         <Tabs defaultActiveKey="1" style={{ width: '100%' }}>
           {/*Params*/}
@@ -321,17 +367,54 @@ export default () => {
               ) : null}
             </Row>
             {/*raw代码编辑组件*/}
-            {bodyType === 'raw' ? (
+            {bodyType !== 'none' ? (
               <Row style={{ marginTop: 12 }}>
                 <Col span={24}>
                   <Card bodyStyle={{ padding: 0 }}>
-                    <CodeEditor value={body} setValue={setBody} height="40vh" />
+                    <CodeEditor value={body} setValue={setBody} height="20vh" />
                   </Card>
                 </Col>
               </Row>
-            ) : null}
+            ) : (
+              <div style={{ height: '20vh', lineHeight: '20vh', textAlign: 'center' }}>
+                This request does not have body
+              </div>
+            )}
           </Tabs.TabPane>
         </Tabs>
+      </Row>
+      {/*返回数据tab菜单*/}
+      <Row gutter={[8, 8]}>
+        {Object.keys(response).length === 0 ? null : (
+          <Tabs
+            defaultActiveKey="1"
+            style={{ width: '100%' }}
+            tabBarExtraContent={tabExtra(response)}
+          >
+            <Tabs.TabPane tab="Body" key="1">
+              <CodeEditor
+                value={response.response ? JSON.stringify(response.response, null, 2) : ''}
+                height="30vh"
+              />
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Cookie" key="2">
+              <Table
+                columns={resColumns}
+                dataSource={toTable('cookies')}
+                size="small"
+                pagination={false}
+              />
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Headers" key="3">
+              <Table
+                columns={resColumns}
+                dataSource={toTable('response_headers')}
+                size="small"
+                pagination={false}
+              />
+            </Tabs.TabPane>
+          </Tabs>
+        )}
       </Row>
     </Card>
   );
