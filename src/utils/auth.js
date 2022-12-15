@@ -12,8 +12,6 @@ export default {
   },
   //针对token过期，权限不够的code码进行不同的处理的方法
   response: (res, info = false) => {
-    console.log(res);
-    console.log(res.code);
     if (res.code === 0) {
       if (info) {
         message.info(res.msg);

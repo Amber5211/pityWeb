@@ -78,12 +78,10 @@ export default () => {
   const onDelete = (columnType, key) => {
     if (columnType === 'params') {
       const data = paramsData.filter((item) => item.id !== key);
-      console.log(data);
       setParamsData(data);
       joinUrl(data);
     } else {
       const data = headers.filter((item) => item.id !== key);
-      console.log(data);
       setHeaders(data);
     }
   };
@@ -91,9 +89,7 @@ export default () => {
   // 根据paramsData拼接url
   const joinUrl = (data) => {
     let tempUrl = url.split('?')[0];
-    console.log(data);
     data.forEach((item, idx) => {
-      console.log(item.key);
       if (item.key) {
         if (idx === 0) {
           tempUrl = `${tempUrl}?${item.key}=${item.value || ''}`;
