@@ -40,6 +40,12 @@ export default [
                 component: './Project/Project',
               },
               {
+                //项目详情路由
+                path: '/project/:id',
+                hideInMenu: true,
+                component: './Project/ProjectDetail',
+              },
+              {
                 path: '/welcome',
                 name: 'welcome',
                 icon: 'smile',

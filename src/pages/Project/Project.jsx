@@ -7,6 +7,7 @@ import { insertProject, listProject } from '@/services/project';
 import auth from '@/utils/auth';
 import FormForModal from '@/components/PityForm/FormForModal';
 import { listUsers } from '@/services/user';
+import { history } from 'umi';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -68,10 +69,6 @@ export default () => {
 
   //解析项目简介信息并返回div展示
   const content = (item) => {
-    console.log('====================');
-    console.log(item);
-    console.log(users);
-    console.log(item.owner);
     return (
       <div>
         <p>负责人:{users[item.owner].name}</p>
@@ -176,7 +173,7 @@ export default () => {
                     style={{ borderRadius: 16, textAlign: 'center' }}
                     bodyStyle={{ padding: 16 }}
                     onClick={() => {
-                      history.push(`/project/${item}`);
+                      history.push(`/project/${item.id}`);
                     }}
                   >
                     <Avatar style={{ backgroundColor: '#87d068' }} size={64}>

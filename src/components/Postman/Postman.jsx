@@ -338,7 +338,7 @@ export default () => {
           </Tabs.TabPane>
           {/*Body*/}
           <Tabs.TabPane tab="Body" key="3">
-            <Row>
+            <Row key={'bodyRow'}>
               {/*传参方式单选框*/}
               <Radio.Group
                 defaultValue="none"
