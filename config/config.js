@@ -32,6 +32,7 @@ export default defineConfig({
   theme: {
     'primary-color': defaultSettings.primaryColor,
     'border-radius-base': '4px',
+    'font-size-base': '13px',
   },
   title: false,
   ignoreMomentLocale: true,

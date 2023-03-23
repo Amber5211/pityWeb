@@ -6,8 +6,8 @@ import { updateProject } from '@/services/project';
 import auth from '@/utils/auth';
 
 const { Option } = Select;
-
-export default (data) => {
+//项目详情组件
+export default ({ data, reloadData }) => {
   //定义用户信息对象
   const [users, setUsers] = useState([]);
 
@@ -23,18 +23,20 @@ export default (data) => {
   //提交
   const onFinish = async (values) => {
     const project = {
-      ...data,
+      id: data.id,
       ...values,
     };
+    console.log(project);
     const res = await updateProject(project);
     auth.response(res, true);
+    await reloadData();
   };
 
   //选择组长下拉框组件
   const opt = (
     <Select placeholder="请选择项目组长">
-      {users.map((item) => (
-        <Option key={item.value} value={item.id}>
+      {users.map((item, index) => (
+        <Option key={index} value={item.id}>
           <Tooltip title={item.email}>{item.name}</Tooltip>
         </Option>
       ))}
@@ -80,7 +82,14 @@ export default (data) => {
   return (
     <Row gutter={8}>
       <Col span={24}>
-        <CustomForm left={6} right={18} record={data} onFinish={onFinish} fields={fields} />
+        <CustomForm
+          left={6}
+          right={18}
+          record={data}
+          onFinish={onFinish}
+          fields={fields}
+          reloadData={reloadData}
+        />
       </Col>
     </Row>
   );

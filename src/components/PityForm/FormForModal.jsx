@@ -38,12 +38,14 @@ const FormForModal = ({
       open={visible}
       onOk={onOk}
       onCancel={onCancel}
+      destroyOnClose={true}
     >
       <Form form={form} {...layout} initialValues={record} onFinish={onFinish}>
         {fields.map((item, index) => (
           <Col span={item.span || 24} key={index}>
             <FormItem
               label={item.label}
+              preserve={false}
               colon={item.colon || true}
               initialValue={item.initialValue}
               name={item.name}

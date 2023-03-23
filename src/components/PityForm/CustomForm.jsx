@@ -19,15 +19,22 @@ export default ({ left, right, record, fields, onFinish }) => {
     <Form form={form} {...layout} initialValues={record} onFinish={onFinish}>
       <Row>
         <Col span={6} />
-        <Col span={12} style={{ textAlign: 'center', margin: 'auto' }}>
-          <Row style={{ textAlign: 'center', marginBottom: 16 }}>
+        <Col span={12} style={{ textAlign: 'center' }}>
+          <Row
+            style={{
+              textAlign: 'center',
+              marginBottom: 16,
+              margin: '0,auto',
+              display: 'inline-block',
+            }}
+          >
             <ProjectAvatar data={record} />
           </Row>
         </Col>
         <Col span={6} />
       </Row>
-      {fields.map((item) => (
-        <Row>
+      {fields.map((item, index) => (
+        <Row key={index}>
           <Col span={6} />
           <Col span={12}>
             <FormItem

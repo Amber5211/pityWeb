@@ -5,6 +5,8 @@ import { useParams } from 'umi';
 import { queryProject } from '@/services/project';
 import auth from '@/utils/auth';
 import ProjectInfo from '@/components/Project/ProjectInfo';
+import ProjectRole from '@/components/Project/ProjectRole';
+import { listUsers } from '@/services/user';
 
 const { TabPane } = Tabs;
 
@@ -17,6 +19,14 @@ export default () => {
   const [projectData, setProjectData] = useState({});
   //定义项目角色列表
   const [roles, setRoles] = useState([]);
+  //定义用户列表
+  const [users, setUsers] = useState([]);
+
+  //获取用户信息
+  const fetchUsers = async () => {
+    const res = await listUsers();
+    setUsers(res);
+  };
 
   //获取项目详情信息方法
   const fetchData = async () => {
@@ -29,6 +39,7 @@ export default () => {
   //渲染页面时调用fetchData方法
   useEffect(async () => {
     await fetchData();
+    await fetchUsers();
   }, []);
 
   return (
@@ -48,10 +59,15 @@ export default () => {
             这里没有用例，暂时替代一下
           </TabPane>
           <TabPane tab="成员列表" key="2">
-            成员列表
+            <ProjectRole
+              users={users}
+              project={projectData}
+              fetchData={fetchData}
+              roles={roles}
+            ></ProjectRole>
           </TabPane>
           <TabPane tab="项目设置" key="3">
-            <ProjectInfo data={projectData} />
+            <ProjectInfo data={projectData} reloadData={fetchData} />
           </TabPane>
         </Tabs>
       </Card>
