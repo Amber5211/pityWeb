@@ -7,6 +7,7 @@ import auth from '@/utils/auth';
 import ProjectInfo from '@/components/Project/ProjectInfo';
 import ProjectRole from '@/components/Project/ProjectRole';
 import { listUsers } from '@/services/user';
+import Directory from '@/components/TestCase/Directory';
 
 const { TabPane } = Tabs;
 
@@ -21,6 +22,8 @@ export default () => {
   const [roles, setRoles] = useState([]);
   //定义用户列表
   const [users, setUsers] = useState([]);
+  //定义用例树对象
+  const [tree, setTree] = useState([]);
 
   //获取用户信息
   const fetchUsers = async () => {
@@ -34,12 +37,13 @@ export default () => {
     if (auth.response(res)) {
       setProjectData(res.data.project);
       setRoles(res.data.roles);
+      setTree(res.data.test_case);
     }
   };
   //渲染页面时调用fetchData方法
   useEffect(async () => {
-    await fetchData();
-    await fetchUsers();
+    fetchData();
+    fetchUsers();
   }, []);
 
   return (
@@ -53,10 +57,15 @@ export default () => {
         </span>
       }
     >
-      <Card>
+      <Card bodyStyle={{ padding: '8px 18px' }}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="用例列表" key="1">
-            这里没有用例，暂时替代一下
+            <Directory
+              loading={false}
+              treeData={tree}
+              fetchData={fetchData}
+              projectData={projectData}
+            />
           </TabPane>
           <TabPane tab="成员列表" key="2">
             <ProjectRole
@@ -67,7 +76,7 @@ export default () => {
             ></ProjectRole>
           </TabPane>
           <TabPane tab="项目设置" key="3">
-            <ProjectInfo data={projectData} reloadData={fetchData} />
+            <ProjectInfo data={projectData} fetchData={fetchData} />
           </TabPane>
         </Tabs>
       </Card>

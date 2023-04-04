@@ -132,7 +132,7 @@ export default () => {
         right={8}
         visible={visible}
         onCancel={() => setVisible(false)}
-        record={{}}
+        record={{ private: false }}
         fields={fields}
         onFinish={onHandleCreate}
       />
@@ -165,7 +165,7 @@ export default () => {
             </Col>
           ) : (
             data.map((item) => (
-              <Col span={4} style={{ marginBottom: 12 }}>
+              <Col span={4} style={{ marginBottom: 12 }} key={item.id}>
                 <Popover content={content(item)} placement="rightTop">
                   <Card
                     hoverable

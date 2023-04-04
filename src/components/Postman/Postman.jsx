@@ -173,18 +173,22 @@ export default () => {
     return [
       {
         title: 'KEY',
+        key: 'key',
         dataIndex: 'key',
       },
       {
         title: 'VALUE',
+        key: 'value',
         dataIndex: 'value',
       },
       {
         title: 'DESCRIPTION',
+        key: 'description',
         dataIndex: 'description',
       },
       {
         title: '操作',
+        valueType: 'option',
         width: 80,
         renderFormItem: (text, record) => (
           <DeleteTwoTone
