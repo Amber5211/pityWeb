@@ -196,7 +196,7 @@ export default (props) => {
           onExpand={onExpand} //展开/收起节点时触发
           expandedKeys={expandedKeys} //（受控）展开指定的树节点
           autoExpandParent={autoExpandParent} //是否自动展开父节点
-          // onSelect={props.onSelect}//点击树节点触发
+          onSelect={props.onSelect} //点击树节点触发
         >
           {loop(props.gData)}
         </Tree>

@@ -22,6 +22,13 @@ export const CONFIG = {
     2: 'Grpc',
     3: 'Dubbo',
   },
+  CASE_TAG: {
+    P0: 'magenta',
+    P1: 'red',
+    P2: 'volcano',
+    P3: 'orange',
+    P4: 'green',
+  },
   CASE_BADGE: {
     1: {
       status: 'processing',

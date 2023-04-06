@@ -24,15 +24,25 @@ export default () => {
   const [users, setUsers] = useState([]);
   //定义用例树对象
   const [tree, setTree] = useState([]);
+  //
+  const [userMap, setUserMap] = useState({});
 
   //获取用户信息
   const fetchUsers = async () => {
     const res = await listUsers();
     setUsers(res);
+    const temp = {};
+    res.forEach((item) => {
+      temp[item.id] = item;
+    });
+    return temp;
   };
 
-  //获取项目详情信息方法
+  //获取项目详情信息和用户信息方法
   const fetchData = async () => {
+    const user = await fetchUsers();
+    setUserMap(user);
+
     const res = await queryProject({ projectId });
     if (auth.response(res)) {
       setProjectData(res.data.project);
@@ -65,6 +75,7 @@ export default () => {
               treeData={tree}
               fetchData={fetchData}
               projectData={projectData}
+              userMap={userMap}
             />
           </TabPane>
           <TabPane tab="成员列表" key="2">
@@ -76,7 +87,7 @@ export default () => {
             ></ProjectRole>
           </TabPane>
           <TabPane tab="项目设置" key="3">
-            <ProjectInfo data={projectData} fetchData={fetchData} />
+            <ProjectInfo data={projectData} reloadData={fetchData} />
           </TabPane>
         </Tabs>
       </Card>

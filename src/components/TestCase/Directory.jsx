@@ -8,7 +8,7 @@ import { createTestCase } from '@/services/testcase';
 import auth from '@/utils/auth';
 import TestCaseDetail from '@/components/TestCase/TestCaseDetail';
 
-export default ({ loading, treeData, fetchData, projectData }) => {
+export default ({ loading, treeData, fetchData, projectData, userMap }) => {
   //搜索框查询的数据
   const [searchValue, setSearchValue] = useState('');
   //Drawer抽屉是否展示
@@ -36,7 +36,7 @@ export default ({ loading, treeData, fetchData, projectData }) => {
   const onSelectKeys = (keys) => {
     if (keys.length > 0 && keys[0].indexOf('case_') > -1) {
       //说明是case
-      setCaseId(parseInt(keys[0].split('-')[1], 10));
+      setCaseId(parseInt(keys[0].split('_')[1], 10));
     } else {
       setCaseId(null);
     }
@@ -91,24 +91,23 @@ export default ({ loading, treeData, fetchData, projectData }) => {
               checkable={false}
               AddButton={AddButton}
               searchValue={searchValue}
+              onSelect={onSelectKeys}
               setSearchValue={setSearchValue}
               iconMap={iconMap}
               suffixMap={() => {
                 return null;
               }}
-              onSelect={onSelectKeys}
             />
           </Card>
         </Col>
         <Col span={17}>
-          <Card
-            bodyStyle={{ padding: 12, minHeight: 500, maxHeight: 500, overflowY: 'auto' }}
-          ></Card>
-          {caseId === null ? (
-            <Result title="请选择左侧用例" status="info" />
-          ) : (
-            <TestCaseDetail caseId={caseId} />
-          )}
+          <Card bodyStyle={{ padding: 12, minHeight: 500, maxHeight: 500, overflowY: 'auto' }}>
+            {caseId === null ? (
+              <Result title="请选择左侧用例" status="info" />
+            ) : (
+              <TestCaseDetail caseId={caseId} userMap={userMap} />
+            )}
+          </Card>
         </Col>
       </Row>
     </Spin>
